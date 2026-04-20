@@ -9,6 +9,10 @@
     <p><strong>Bio:</strong> {{ profile.bio }}</p>
     <p><strong>Interests:</strong> {{ profile.interests }}</p>
     <p><strong>Preferred Call Type:</strong> {{ profile.get_preferred_call_type_display }}</p>
+    <form action="{% url 'matches:send_like' profile.id %}" method="post" style="margin-top: 10px;">
+        {% csrf_token %}
+        <button type="submit">Like</button>
+    </form>
 
     <p>
         <a href="{% url 'accounts:browse_profiles' %}">Back to Browse</a>
