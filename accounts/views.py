@@ -28,7 +28,15 @@ def edit_profile(request):
 
 @login_required
 def browse_profiles(request):
-    profiles = Profile.objects.exclude(user=request.user)
+    user_profile = request.user.profile
+
+    if user_profile.interested_in == "women":
+        profiles = Profile.objects.filter(gender="female").exclude(user=request.user)
+    elif user_profile.interested_in == "men":
+        profiles = Profile.objects.filter(gender="male").exclude(user=request.user)
+    else:
+        profiles = Profile.objects.exclude(user=request.user)
+
     return render(request, "accounts/browse_profiles.html", {"profiles": profiles})
 
 

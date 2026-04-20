@@ -1,6 +1,16 @@
 from django.contrib.auth.models import User
 from django.db import models
 
+GENDER_CHOICES = [
+    ("male", "Male"),
+    ("female", "Female"),
+]
+
+INTEREST_CHOICES = [
+    ("men", "Men"),
+    ("women", "Women"),
+]
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     display_name = models.CharField(max_length=100)
@@ -9,6 +19,10 @@ class Profile(models.Model):
     state = models.CharField(max_length=100, blank=True)
     bio = models.TextField(blank=True)
     interests = models.TextField(blank=True)
+
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, blank=True)
+    interested_in = models.CharField(max_length=10, choices=INTEREST_CHOICES, blank=True)
+
     preferred_call_type = models.CharField(
         max_length=10,
         choices=[

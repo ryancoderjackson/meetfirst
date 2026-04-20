@@ -12,6 +12,8 @@ class ProfileForm(forms.ModelForm):
             "state",
             "bio",
             "interests",
+            "gender",
+            "interested_in",
             "preferred_call_type",
         ]
         widgets = {
