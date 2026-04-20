@@ -1,7 +1,8 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 
 from .forms import ProfileForm
+from .models import Profile
 
 
 @login_required
@@ -23,3 +24,15 @@ def edit_profile(request):
         form = ProfileForm(instance=profile)
 
     return render(request, "accounts/edit_profile.html", {"form": form})
+
+
+@login_required
+def browse_profiles(request):
+    profiles = Profile.objects.exclude(user=request.user)
+    return render(request, "accounts/browse_profiles.html", {"profiles": profiles})
+
+
+@login_required
+def public_profile_detail(request, profile_id):
+    profile = get_object_or_404(Profile, id=profile_id)
+    return render(request, "accounts/public_profile_detail.html", {"profile": profile})

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Browse Profiles</h1>
+
+    {% if profiles %}
+        {% for profile in profiles %}
+            <div style="margin-bottom: 20px; padding: 10px; border: 1px solid #ccc;">
+                <h2>{{ profile.display_name }}</h2>
+                <p><strong>Age:</strong> {{ profile.age }}</p>
+                <p><strong>City:</strong> {{ profile.city }}</p>
+                <p><strong>State:</strong> {{ profile.state }}</p>
+                <p><strong>Preferred Call Type:</strong> {{ profile.get_preferred_call_type_display }}</p>
+
+                <a href="{% url 'accounts:public_profile_detail' profile.id %}">View Profile</a>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No profiles available right now.</p>
+    {% endif %}
+{% endblock %}
