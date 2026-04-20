@@ -13,6 +13,11 @@
                 <p><strong>Preferred Call Type:</strong> {{ profile.get_preferred_call_type_display }}</p>
 
                 <a href="{% url 'accounts:public_profile_detail' profile.id %}">View Profile</a>
+
+                <form action="{% url 'matches:send_like' profile.id %}" method="post" style="margin-top: 10px;">
+                    {% csrf_token %}
+                    <button type="submit">Like</button>
+                </form>
             </div>
         {% endfor %}
     {% else %}
