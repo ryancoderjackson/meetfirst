@@ -8,10 +8,10 @@
             <div style="margin-bottom: 20px; padding: 10px; border: 1px solid #ccc;">
                 <h2>{{ item.profile.display_name }}</h2>
                 <p><strong>Age:</strong> {{ item.profile.age }}</p>
-                <p><strong>City:</strong> {{ item.profile.city }}</p>
-                <p><strong>State:</strong> {{ item.profile.state }}</p>
-                <p><strong>Preferred Call Type:</strong> {{ item.profile.get_preferred_call_type_display }}</p>
-                <p><strong>Matched On:</strong> {{ item.match.created_at }}</p>
+
+                <p>
+                    <a href="{% url 'matches:match_detail' item.match.id %}">View Match</a>
+                </p>
             </div>
         {% endfor %}
     {% else %}

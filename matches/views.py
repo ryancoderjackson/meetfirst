@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
-from django.db.models import Q
 
 from accounts.models import Profile
 from .models import Like, Match
@@ -50,3 +50,23 @@ def matches_list(request):
         })
 
     return render(request, "matches/matches_list.html", {"match_profiles": match_profiles})
+
+
+@login_required
+def match_detail(request, match_id):
+    match = get_object_or_404(
+        Match.objects.filter(Q(user1=request.user) | Q(user2=request.user)),
+        id=match_id
+    )
+
+    other_user = match.user2 if match.user1 == request.user else match.user1
+    other_profile = other_user.profile
+
+    return render(
+        request,
+        "matches/match_detail.html",
+        {
+            "match": match,
+            "profile": other_profile,
+        }
+    )
