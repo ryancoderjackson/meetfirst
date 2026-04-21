@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Your Matches</h1>
+
+    {% if match_profiles %}
+        {% for item in match_profiles %}
+            <div style="margin-bottom: 20px; padding: 10px; border: 1px solid #ccc;">
+                <h2>{{ item.profile.display_name }}</h2>
+                <p><strong>Age:</strong> {{ item.profile.age }}</p>
+                <p><strong>City:</strong> {{ item.profile.city }}</p>
+                <p><strong>State:</strong> {{ item.profile.state }}</p>
+                <p><strong>Preferred Call Type:</strong> {{ item.profile.get_preferred_call_type_display }}</p>
+                <p><strong>Matched On:</strong> {{ item.match.created_at }}</p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>You have no matches yet.</p>
+    {% endif %}
+{% endblock %}

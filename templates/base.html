@@ -11,6 +11,7 @@
             <a href="{% url 'accounts:profile_detail' %}">My Profile</a> |
             <a href="{% url 'accounts:edit_profile' %}">Edit Profile</a> |
             <a href="{% url 'accounts:browse_profiles' %}">Browse Profiles</a> |
+            <a href="{% url 'matches:matches_list' %}">Matches</a> |
 
             <form action="{% url 'logout' %}" method="post" style="display:inline;">
                 {% csrf_token %}

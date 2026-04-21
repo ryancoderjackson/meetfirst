@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
+from django.db.models import Q
 
 from accounts.models import Profile
 from .models import Like, Match
@@ -32,3 +33,20 @@ def send_like(request, profile_id):
             )
 
     return redirect("accounts:browse_profiles")
+
+
+@login_required
+def matches_list(request):
+    matches = Match.objects.filter(
+        Q(user1=request.user) | Q(user2=request.user)
+    ).order_by("-created_at")
+
+    match_profiles = []
+    for match in matches:
+        other_user = match.user2 if match.user1 == request.user else match.user1
+        match_profiles.append({
+            "match": match,
+            "profile": other_user.profile,
+        })
+
+    return render(request, "matches/matches_list.html", {"match_profiles": match_profiles})
