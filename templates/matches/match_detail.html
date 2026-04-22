@@ -18,6 +18,13 @@
         <p><strong>Scheduled For:</strong> {{ intro_call.scheduled_for }}</p>
         <p><strong>Scheduled By:</strong> {{ intro_call.scheduled_by.username }}</p>
         <p><strong>Status:</strong> {{ intro_call.get_status_display }}</p>
+
+        {% if intro_call.status == "scheduled" %}
+            <form action="{% url 'calls:complete_intro_call' match.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit">Mark Intro Call as Completed</button>
+            </form>
+        {% endif %}
     {% else %}
         <p>
             <a href="{% url 'calls:schedule_intro_call' match.id %}">Schedule Intro Call</a>
