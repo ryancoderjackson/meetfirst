@@ -5,6 +5,8 @@ from django.views.decorators.http import require_POST
 
 from accounts.models import Profile
 from .models import Like, Match
+from messaging.forms import MessageForm
+from messaging.models import Message
 
 
 @login_required
@@ -63,6 +65,11 @@ def match_detail(request, match_id):
     other_profile = other_user.profile
 
     intro_call = getattr(match, "intro_call", None)
+    messages = match.messages.all()
+
+    message_form = None
+    if intro_call and intro_call.status == "completed":
+        message_form = MessageForm()
 
     return render(
         request,
@@ -71,5 +78,7 @@ def match_detail(request, match_id):
             "match": match,
             "profile": other_profile,
             "intro_call": intro_call,
+            "messages": messages,
+            "message_form": message_form,
         }
     )

@@ -31,6 +31,29 @@
         </p>
     {% endif %}
 
+    {% if intro_call and intro_call.status == "completed" %}
+        <h3>Messages</h3>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div style="margin-bottom: 10px; padding: 10px; border: 1px solid #ccc;">
+                    <p><strong>{{ message.sender.username }}</strong></p>
+                    <p>{{ message.body }}</p>
+                    <p><small>{{ message.created_at }}</small></p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No messages yet.</p>
+        {% endif %}
+
+        <h4>Send a Message</h4>
+        <form action="{% url 'messaging:send_message' match.id %}" method="post">
+            {% csrf_token %}
+            {{ message_form.as_p }}
+            <button type="submit">Send Message</button>
+        </form>
+    {% endif %}
+
     <p>
         <a href="{% url 'matches:matches_list' %}">Back to Matches</a>
     </p>
