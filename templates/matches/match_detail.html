@@ -12,9 +12,17 @@
     <p><strong>Preferred Call Type:</strong> {{ profile.get_preferred_call_type_display }}</p>
     <p><strong>Matched On:</strong> {{ match.created_at }}</p>
 
-    <p>
-        <a href="#">Schedule Intro Call</a>
-    </p>
+    {% if intro_call %}
+        <h3>Scheduled Intro Call</h3>
+        <p><strong>Call Type:</strong> {{ intro_call.get_call_type_display }}</p>
+        <p><strong>Scheduled For:</strong> {{ intro_call.scheduled_for }}</p>
+        <p><strong>Scheduled By:</strong> {{ intro_call.scheduled_by.username }}</p>
+        <p><strong>Status:</strong> {{ intro_call.get_status_display }}</p>
+    {% else %}
+        <p>
+            <a href="{% url 'calls:schedule_intro_call' match.id %}">Schedule Intro Call</a>
+        </p>
+    {% endif %}
 
     <p>
         <a href="{% url 'matches:matches_list' %}">Back to Matches</a>

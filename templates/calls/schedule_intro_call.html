@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Schedule Intro Call</h1>
+
+    <p>Schedule your intro call for this match.</p>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save Intro Call</button>
+    </form>
+
+    <p>
+        <a href="{% url 'matches:match_detail' match.id %}">Back to Match Detail</a>
+    </p>
+{% endblock %}

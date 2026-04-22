@@ -62,11 +62,14 @@ def match_detail(request, match_id):
     other_user = match.user2 if match.user1 == request.user else match.user1
     other_profile = other_user.profile
 
+    intro_call = getattr(match, "intro_call", None)
+
     return render(
         request,
         "matches/match_detail.html",
         {
             "match": match,
             "profile": other_profile,
+            "intro_call": intro_call,
         }
     )
