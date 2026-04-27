@@ -23,6 +23,11 @@
     </nav>
 
     <hr>
+        {% if messages %}
+            {% for message in messages %}
+                <p><strong>{{ message }}</strong></p>
+            {% endfor %}
+        {% endif %}
 
     {% block content %}
     {% endblock %}

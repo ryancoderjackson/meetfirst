@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
@@ -29,10 +30,16 @@ def send_like(request, profile_id):
             user_a = min(request.user, profile.user, key=lambda user: user.id)
             user_b = max(request.user, profile.user, key=lambda user: user.id)
 
-            Match.objects.get_or_create(
+            match, match_created = Match.objects.get_or_create(
                 user1=user_a,
                 user2=user_b
             )
+
+            if match_created:
+                messages.success(
+                    request,
+                    f"You matched with {profile.user.profile.display_name}!"
+                )
 
     return redirect("accounts:browse_profiles")
 
