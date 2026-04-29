@@ -54,3 +54,17 @@ def complete_intro_call(request, match_id):
         intro_call.save()
 
     return redirect("matches:match_detail", match_id=match.id)
+
+
+@login_required
+@require_POST
+def cancel_intro_call(request, match_id):
+    match = get_object_or_404(
+        Match.objects.filter(Q(user1=request.user) | Q(user2=request.user)),
+        id=match_id
+    )
+
+    intro_call = get_object_or_404(IntroCall, match=match)
+    intro_call.delete()
+
+    return redirect("matches:match_detail", match_id=match.id)

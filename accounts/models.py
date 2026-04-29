@@ -23,6 +23,8 @@ class Profile(models.Model):
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES, blank=True)
     interested_in = models.CharField(max_length=10, choices=INTEREST_CHOICES, blank=True)
 
+    profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
+
     preferred_call_type = models.CharField(
         max_length=10,
         choices=[

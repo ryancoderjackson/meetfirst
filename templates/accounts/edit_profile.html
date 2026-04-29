@@ -1,15 +1,51 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Edit Profile</h1>
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <h1 class="mb-4">Edit Profile</h1>
 
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Save Profile</button>
-    </form>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
 
-    <p>
-        <a href="{% url 'accounts:profile_detail' %}">Back to Profile</a>
-    </p>
+                    {% for field in form %}
+                        <div class="mb-3">
+                            <label class="form-label" for="{{ field.id_for_label }}">
+                                {{ field.label }}
+                            </label>
+
+                            {% if field.name == "profile_picture" %}
+                                {% if form.instance.profile_picture %}
+                                    <div class="mb-2">
+                                        <img src="{{ form.instance.profile_picture.url }}"
+                                            class="rounded-circle"
+                                            width="100" height="100"
+                                            style="object-fit: cover;">
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+
+                            {{ field }}
+
+                            {% if field.errors %}
+                                <div class="text-danger small">
+                                    {{ field.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-primary" type="submit">Save Profile</button>
+                        <a class="btn btn-outline-secondary" href="{% url 'accounts:profile_detail' %}">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

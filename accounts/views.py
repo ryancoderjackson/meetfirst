@@ -1,9 +1,11 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render, get_object_or_404
+from django.db.models import Q
 
 from .forms import ProfileForm
 from .models import Profile
-from matches.models import Like
+from matches.models import Like, Match
+from calls.models import IntroCall
 
 
 @login_required
@@ -17,7 +19,7 @@ def edit_profile(request):
     profile = request.user.profile
 
     if request.method == "POST":
-        form = ProfileForm(request.POST, instance=profile)
+        form = ProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
             form.save()
             return redirect("accounts:profile_detail")
@@ -70,5 +72,32 @@ def public_profile_detail(request, profile_id):
         {
             "profile": profile,
             "already_liked": already_liked,
+        }
+    )
+
+
+@login_required
+def dashboard(request):
+    recent_matches = Match.objects.filter(
+        Q(user1=request.user) | Q(user2=request.user)
+    ).order_by("-created_at")[:3]
+
+    upcoming_calls = IntroCall.objects.filter(
+        Q(match__user1=request.user) | Q(match__user2=request.user),
+        status="scheduled"
+    ).order_by("scheduled_for")[:3]
+
+    unlocked_conversations = Match.objects.filter(
+        Q(user1=request.user) | Q(user2=request.user),
+        intro_call__status="completed"
+    ).order_by("-intro_call__scheduled_for")[:3]
+
+    return render(
+        request,
+        "accounts/dashboard.html",
+        {
+            "recent_matches": recent_matches,
+            "upcoming_calls": upcoming_calls,
+            "unlocked_conversations": unlocked_conversations,
         }
     )

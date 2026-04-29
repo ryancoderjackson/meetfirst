@@ -1,23 +1,42 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Browse Profiles</h1>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="mb-1">Discover</h1>
+        </div>
+    </div>
 
     {% if profiles %}
-        {% for profile in profiles %}
-            <div style="margin-bottom: 20px; padding: 10px; border: 1px solid #ccc;">
-                <h2>{{ profile.display_name }}</h2>
-                <p><strong>Age:</strong> {{ profile.age }}</p>
+        <div class="row g-4">
+            {% for profile in profiles %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            {% if profile.profile_picture %}
+                                <img src="{{ profile.profile_picture.url }}" class="profile-img-card" alt="{{ profile.display_name }}">
+                            {% endif %}
+                            <h3 class="card-title mb-1">{{ profile.display_name }}</h3>
+                            <p class="text-muted mb-3">Age {{ profile.age }}</p>
 
-                <a href="{% url 'accounts:public_profile_detail' profile.id %}">View Profile</a>
+                            <div class="d-flex gap-2">
+                                <a class="btn btn-outline-primary btn-sm" href="{% url 'accounts:public_profile_detail' profile.id %}">
+                                    View Profile
+                                </a>
 
-                <form action="{% url 'matches:send_like' profile.id %}" method="post" style="margin-top: 10px;">
-                    {% csrf_token %}
-                    <button type="submit">Like</button>
-                </form>
-            </div>
-        {% endfor %}
+                                <form action="{% url 'matches:send_like' profile.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button class="btn btn-primary btn-sm" type="submit">Like</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
     {% else %}
-        <p>No more profiles available right now.</p>
+        <div class="alert alert-info">
+            No more profiles available right now.
+        </div>
     {% endif %}
 {% endblock %}

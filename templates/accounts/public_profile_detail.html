@@ -1,25 +1,65 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>{{ profile.display_name }}'s Profile</h1>
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-start mb-4">
+                    {% if profile.profile_picture %}
+                        <img src="{{ profile.profile_picture.url }}" class="profile-img-circle mb-3" alt="{{ profile.display_name }}">
+                    {% endif %}
+                    
+                    <div>
+                        <h1 class="mb-1">{{ profile.display_name }}'s Profile</h1>
+                        <h4 class="text-muted">Age {{ profile.age }}</h4>
+                    </div>
 
-    <p><strong>Age:</strong> {{ profile.age }}</p>
-    <p><strong>City:</strong> {{ profile.city }}</p>
-    <p><strong>State:</strong> {{ profile.state }}</p>
-    <p><strong>Bio:</strong> {{ profile.bio }}</p>
-    <p><strong>Interests:</strong> {{ profile.interests }}</p>
-    <p><strong>Preferred Call Type:</strong> {{ profile.get_preferred_call_type_display }}</p>
+                    {% if already_liked %}
+                        <span class="badge text-bg-success">Already liked</span>
+                    {% else %}
+                        <form action="{% url 'matches:send_like' profile.id %}" method="post">
+                            {% csrf_token %}
+                            <button class="btn btn-primary btn-sm" type="submit">Like</button>
+                        </form>
+                    {% endif %}
+                </div>
 
-    {% if already_liked %}
-        <p><strong>Already liked</strong></p>
-    {% else %}
-        <form action="{% url 'matches:send_like' profile.id %}" method="post" style="margin-top: 10px;">
-            {% csrf_token %}
-            <button type="submit">Like</button>
-        </form>
-    {% endif %}
+                <div class="mb-3">
+                    <p><strong>City:</strong> {{ profile.city }}</p>
+                    <p><strong>State:</strong> {{ profile.state }}</p>
+                    <p><strong>Preferred Call Type:</strong> {{ profile.get_preferred_call_type_display }}</p>
+                </div>
 
-    <p>
-        <a href="{% url 'accounts:browse_profiles' %}">Back to Browse</a>
-    </p>
+                <hr>
+
+                <div class="mb-3">
+                    <h5>Bio</h5>
+                    <p class="text-muted">
+                        {% if profile.bio %}
+                            {{ profile.bio }}
+                        {% else %}
+                            No bio added yet.
+                        {% endif %}
+                    </p>
+                </div>
+
+                <div class="mb-4">
+                    <h5>Interests</h5>
+                    <p class="text-muted mb-0">
+                        {% if profile.interests %}
+                            {{ profile.interests }}
+                        {% else %}
+                            No interests added yet.
+                        {% endif %}
+                    </p>
+                </div>
+
+                <a class="btn btn-outline-secondary btn-sm" href="{% url 'accounts:browse_profiles' %}">
+                    Back to Discover
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

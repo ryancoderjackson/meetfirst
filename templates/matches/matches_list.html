@@ -1,20 +1,36 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Your Matches</h1>
+    <div class="mb-4">
+        <h1 class="mb-1">Your Matches</h1>
+    </div>
 
     {% if match_profiles %}
-        {% for item in match_profiles %}
-            <div style="margin-bottom: 20px; padding: 10px; border: 1px solid #ccc;">
-                <h2>{{ item.profile.display_name }}</h2>
-                <p><strong>Age:</strong> {{ item.profile.age }}</p>
+        <div class="row g-4">
+            {% for item in match_profiles %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            {% if item.profile.profile_picture %}
+                                <img src="{{ item.profile.profile_picture.url }}" class="profile-img-card" alt="{{ item.profile.display_name }}">
+                            {% endif %}
+                            <h3 class="card-title mb-1">{{ item.profile.display_name }}</h3>
+                            <p class="text-muted mb-2">Age {{ item.profile.age }}</p>
+                            <p class="small text-muted mb-3">
+                                Matched {{ item.match.created_at|date:"M j, Y" }}
+                            </p>
 
-                <p>
-                    <a href="{% url 'matches:match_detail' item.match.id %}">View Match</a>
-                </p>
-            </div>
-        {% endfor %}
+                            <a class="btn btn-primary btn-sm" href="{% url 'matches:match_detail' item.match.id %}">
+                                View Match
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
     {% else %}
-        <p>You have no matches yet.</p>
+        <div class="alert alert-info">
+            You have no matches yet.
+        </div>
     {% endif %}
 {% endblock %}

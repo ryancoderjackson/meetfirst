@@ -38,7 +38,8 @@ def send_like(request, profile_id):
             if match_created:
                 messages.success(
                     request,
-                    f"You matched with {profile.user.profile.display_name}!"
+                    f"You matched with {profile.user.profile.display_name}!",
+                    extra_tags=f"match-{match.id}"
                 )
 
     return redirect("accounts:browse_profiles")
@@ -72,7 +73,7 @@ def match_detail(request, match_id):
     other_profile = other_user.profile
 
     intro_call = getattr(match, "intro_call", None)
-    messages = match.messages.all()
+    chat_messages = match.messages.all()
 
     message_form = None
     if intro_call and intro_call.status == "completed":
@@ -83,9 +84,9 @@ def match_detail(request, match_id):
         "matches/match_detail.html",
         {
             "match": match,
-            "profile": other_profile,
+            "other_profile": other_profile,
             "intro_call": intro_call,
-            "messages": messages,
+            "chat_messages": chat_messages,
             "message_form": message_form,
         }
     )

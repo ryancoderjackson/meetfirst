@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="mb-4">
+        <h1>MeetFirst</h1>
+        <h5 class="subtitle">Welcome Back, {{ request.user.profile.display_name }}!</h5>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h4 class="card-title">Recent Matches</h4>
+
+                    {% if recent_matches %}
+                        {% for match in recent_matches %}
+                            {% if match.user1 == request.user %}
+                                {% with profile=match.user2.profile %}
+                                    <div class="d-flex align-items-center mb-2 gap-2">
+                                        
+                                        {% if profile.profile_picture %}
+                                            <img src="{{ profile.profile_picture.url }}" 
+                                                class="rounded-circle" 
+                                                style="width:40px; height:40px; object-fit:cover;">
+                                        {% endif %}
+
+                                        <div>
+                                            <strong>{{ profile.display_name }}</strong><br>
+                                            <a href="{% url 'matches:match_detail' match.id %}"
+                                                class="btn btn-sm btn-primary">
+                                                Open
+                                            </a>
+                                        </div>
+
+                                    </div>
+                                {% endwith %}
+                            {% else %}
+                                {% with profile=match.user1.profile %}
+                                    <div class="d-flex align-items-center mb-2 gap-2">
+                                        
+                                        {% if profile.profile_picture %}
+                                            <img src="{{ profile.profile_picture.url }}" 
+                                                class="rounded-circle" 
+                                                style="width:40px; height:40px; object-fit:cover;">
+                                        {% endif %}
+
+                                        <div>
+                                            <strong>{{ profile.display_name }}</strong><br>
+                                            <a href="{% url 'matches:match_detail' match.id %}"
+                                                class="btn btn-sm btn-primary">
+                                                Open
+                                            </a>
+                                        </div>
+
+                                    </div>
+                                {% endwith %}
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">No matches yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h4 class="card-title">Upcoming Calls</h4>
+
+                    {% if upcoming_calls %}
+                        {% for call in upcoming_calls %}
+                            <p class="mb-2">
+                                <strong>{{ call.scheduled_for|date:"M j, g:i A" }}</strong><br>
+                                {{ call.get_call_type_display }} call<br>
+                                <a href="{% url 'matches:match_detail' call.match.id %}"
+                                   class="btn btn-outline-primary btn-sm px-2 py-1">
+                                    View Match
+                                </a>
+                            </p>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">No upcoming calls.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h4 class="card-title">Unlocked Conversations</h4>
+
+                    {% if unlocked_conversations %}
+                        {% for match in unlocked_conversations %}
+                            {% if match.user1 == request.user %}
+                                {% with profile=match.user2.profile %}
+                                    <p class="mb-2">
+                                        <strong>{{ profile.display_name }}</strong><br>
+                                        <a href="{% url 'matches:match_detail' match.id %}"
+                                           class=" btn btn-outline-primary btn-sm px-2 py-1">
+                                            Open Chat
+                                        </a>
+                                    </p>
+                                {% endwith %}
+                            {% else %}
+                                {% with profile=match.user1.profile %}
+                                    <p class="mb-2">
+                                        <strong>{{ profile.display_name }}</strong><br>
+                                        <a href="{% url 'matches:match_detail' match.id %}"
+                                           class="btn btn-outline-primary btn-sm px-2 py-1">
+                                            Open Chat
+                                        </a>
+                                    </p>
+                                {% endwith %}
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">No unlocked conversations yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

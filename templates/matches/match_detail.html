@@ -1,60 +1,159 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Match Detail</h1>
+<div class="container">
 
-    <h2>{{ profile.display_name }}</h2>
-    <p><strong>Age:</strong> {{ profile.age }}</p>
-    <p><strong>City:</strong> {{ profile.city }}</p>
-    <p><strong>State:</strong> {{ profile.state }}</p>
-    <p><strong>Bio:</strong> {{ profile.bio }}</p>
-    <p><strong>Interests:</strong> {{ profile.interests }}</p>
-    <p><strong>Preferred Call Type:</strong> {{ profile.get_preferred_call_type_display }}</p>
-    <p><strong>Matched On:</strong> {{ match.created_at }}</p>
+    <h1 class="mb-4">Match</h1>
 
-    {% if intro_call %}
-        <h3>Scheduled Intro Call</h3>
-        <p><strong>Call Type:</strong> {{ intro_call.get_call_type_display }}</p>
-        <p><strong>Scheduled For:</strong> {{ intro_call.scheduled_for }}</p>
-        <p><strong>Scheduled By:</strong> {{ intro_call.scheduled_by.username }}</p>
-        <p><strong>Status:</strong> {{ intro_call.get_status_display }}</p>
+    <div class="row g-4">
 
-        {% if intro_call.status == "scheduled" %}
-            <form action="{% url 'calls:complete_intro_call' match.id %}" method="post">
-                {% csrf_token %}
-                <button type="submit">Mark Intro Call as Completed</button>
-            </form>
-        {% endif %}
-    {% else %}
-        <p>
-            <a href="{% url 'calls:schedule_intro_call' match.id %}">Schedule Intro Call</a>
-        </p>
-    {% endif %}
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    {% if other_profile.profile_picture %}
+                        <img src="{{ other_profile.profile_picture.url }}" class="profile-img-card" alt="{{ other_profile.display_name }}">
+                    {% endif %}
+                    <h3 class="card-title">{{ other_profile.display_name }}</h3>
+                    <p class="text-muted mb-3">Age {{ other_profile.age }}</p>
 
-    {% if intro_call and intro_call.status == "completed" %}
-        <h3>Messages</h3>
+                    <p><strong>City:</strong> {{ other_profile.city }}</p>
+                    <p><strong>State:</strong> {{ other_profile.state }}</p>
 
-        {% if messages %}
-            {% for message in messages %}
-                <div style="margin-bottom: 10px; padding: 10px; border: 1px solid #ccc;">
-                    <p><strong>{{ message.sender.username }}</strong></p>
-                    <p>{{ message.body }}</p>
-                    <p><small>{{ message.created_at }}</small></p>
+                    {% if other_profile.bio %}
+                        <p><strong>Bio:</strong> {{ other_profile.bio }}</p>
+                    {% endif %}
+
+                    {% if other_profile.interests %}
+                        <p><strong>Interests:</strong> {{ other_profile.interests }}</p>
+                    {% endif %}
                 </div>
-            {% endfor %}
-        {% else %}
-            <p>No messages yet.</p>
-        {% endif %}
+            </div>
+        </div>
 
-        <h4>Send a Message</h4>
-        <form action="{% url 'messaging:send_message' match.id %}" method="post">
-            {% csrf_token %}
-            {{ message_form.as_p }}
-            <button type="submit">Send Message</button>
-        </form>
-    {% endif %}
+        <div class="col-md-8 d-flex flex-column gap-4">
 
-    <p>
-        <a href="{% url 'matches:matches_list' %}">Back to Matches</a>
-    </p>
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="mb-3">Intro Call</h5>
+
+                    {% if match.intro_call %}
+                        <p><strong>Type:</strong> {{ match.intro_call.call_type }}</p>
+                        <p><strong>Scheduled:</strong> {{ match.intro_call.scheduled_for|date:"M j, Y g:i A" }}</p>
+                        <p><strong>Status:</strong> {{ match.intro_call.status }}</p>
+
+                        {% if match.intro_call.status == "scheduled" %}
+                            <form method="post" action="{% url 'calls:cancel_intro_call' match.id %}">
+                                {% csrf_token %}
+                                <button class="btn btn-danger btn-sm"
+                                type="submit"
+                                onclick="return confirm('Are you sure you want to cancel this intro call?');"
+                                >
+                                    Cancel Call
+                                </button>
+                            </form>
+                        {% endif %}
+
+                    {% else %}
+                        <a class="btn btn-primary btn-sm" href="{% url 'calls:schedule_intro_call' match.id %}">
+                            Schedule Intro Call
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if intro_call and intro_call.status == "completed" %}
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="mb-3">Messages</h5>
+
+                        <div class="chat-box mb-3 p-3 bg-light rounded" style="max-height: 350px; overflow-y: auto;">
+                            {% if chat_messages %}
+                                {% for message in chat_messages %}
+                                    {% if message.sender == request.user %}
+                                        <div class="d-flex justify-content-end mb-3">
+                                            <div class="bg-primary text-white p-3 rounded-3" style="max-width: 70%;">
+                                                <p class="mb-1">{{ message.body }}</p>
+                                                <small class="text-white-50">
+                                                    {% now "Y-m-d" as today %}
+                                                    {% with message.created_at|date:"Y-m-d" as msg_date %}
+                                                        {% if msg_date == today %}
+                                                            {{ message.created_at|date:"g:i A" }}
+                                                        {% else %}
+                                                            {{ message.created_at|date:"M j" }}
+                                                        {% endif %}
+                                                    {% endwith %}
+                                                </small>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="d-flex justify-content-start mb-3">
+                                            <div class="bg-white border p-3 rounded-3" style="max-width: 70%;">
+                                                <p class="mb-1">{{ message.body }}</p>
+                                                <small class="text-muted">
+                                                    {% now "Y-m-d" as today %}
+                                                    {% with message.created_at|date:"Y-m-d" as msg_date %}
+                                                        {% if msg_date == today %}
+                                                            {{ message.created_at|date:"g:i A" }}
+                                                        {% else %}
+                                                            {{ message.created_at|date:"M j" }}
+                                                        {% endif %}
+                                                    {% endwith %}
+                                                </small>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                <p class="text-muted mb-0">No messages yet.</p>
+                            {% endif %}
+                        </div>
+
+                        <form method="post" action="{% url 'messaging:send_message' match.id %}">
+                            {% csrf_token %}
+                            <div class="mb-2">
+                                <textarea
+                                    name="body"
+                                    class="form-control"
+                                    rows="3"
+                                    placeholder="Type a message..."
+                                    required
+                                ></textarea>
+                            </div>
+                            <button class="btn btn-primary btn-sm" type="submit">Send Message</button>
+                        </form>
+                    </div>
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a href="{% url 'matches:matches_list' %}" class="btn btn-outline-secondary btn-sm">
+            Back to Matches
+        </a>
+    </div>
+
+    <script>
+        const chatBox = document.querySelector('.chat-box');
+        if (chatBox) {
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    </script>
+
+    <script>
+        const textarea = document.querySelector('textarea[name="body"]');
+        const form = textarea?.closest('form');
+
+        if (textarea && form) {
+            textarea.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    form.submit();
+                }
+            });
+        }
+    </script>
+
+</div>
 {% endblock %}

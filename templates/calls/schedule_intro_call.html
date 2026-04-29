@@ -1,17 +1,39 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Schedule Intro Call</h1>
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
 
-    <p>Schedule your intro call for this match.</p>
+                <div class="mb-4">
+                    <h1 class="mb-1">Schedule Intro Call</h1>
+                    <p class="text-muted mb-0">
+                        Set up your first call and unlock your conversation.
+                    </p>
+                </div>
 
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Save Intro Call</button>
-    </form>
+                <form method="post">
+                    {% csrf_token %}
 
-    <p>
-        <a href="{% url 'matches:match_detail' match.id %}">Back to Match Detail</a>
-    </p>
+                    <div class="mb-3">
+                        {{ form.as_p }}
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-primary btn-sm" type="submit">
+                            Save Call
+                        </button>
+
+                        <a class="btn btn-outline-secondary btn-sm"
+                           href="{% url 'matches:match_detail' match.id %}">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

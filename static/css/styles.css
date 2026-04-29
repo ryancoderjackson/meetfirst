@@ -1,0 +1,132 @@
+:root {
+    --mf-primary: #14b8a6;
+    --mf-primary-dark: #0f766e;
+    --mf-bg: #6fa8c9;
+    --mf-card: #ffffff;
+    --mf-text: #0f172a;
+    --mf-muted: #64748b;
+}
+
+body {
+    min-height: 100vh;
+    background: linear-gradient(
+        to bottom,
+        #6fa8c9 0%,
+        #cfe7f3 40%,
+        #eaf4fa 70%,
+        #f7fbff 100% 
+    ) no-repeat;
+    color: white;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(
+        circle at top center,
+        rgba(111, 168, 201, 0.25),
+        transparent 60%
+    );
+    z-index: 0;
+    pointer-events: none;
+}
+
+.navbar {
+    background: linear-gradient(90deg, #0f766e, #14b8a6);
+}
+
+.navbar-brand {
+    color: #ffffff;
+    letter-spacing: 0.3px;
+}
+
+.navbar .nav-link {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.navbar .nav-link:hover {
+    color: #ffffff;
+}
+
+.card {
+    border: 1px solid rgba(20, 184, 166, 0.18);
+    border-radius: 16px;
+}
+
+.card.shadow-sm {
+    box-shadow: 0 8px 24px rgba(15, 118, 110, 0.08);
+}
+
+.btn-primary {
+    background-color: var(--mf-primary);
+    border-color: var(--mf-primary);
+}
+
+.btn-primary:hover {
+    background-color: var(--mf-primary-dark);
+    border-color: var(--mf-primary-dark);
+}
+
+.btn-outline-primary {
+    color: var(--mf-primary-dark);
+    border-color: var(--mf-primary);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--mf-primary);
+    border-color: var(--mf-primary);
+    color: #ffffff;
+}
+
+.alert-info {
+    background-color: #ccfbf1;
+    border-color: #99f6e4;
+    color: #134e4a;
+}
+
+/* Match success modal */
+.modal-content {
+    background: #ffffff;
+    color: #212529;
+}
+
+.modal-content .modal-title,
+.modal-content .modal-body,
+.modal-content .modal-body p {
+    color: #212529;
+}
+
+.modal-content .btn-close {
+    filter: none;
+}
+
+.modal-content .btn-primary {
+    background-color: #14b8a6;
+    border-color: #14b8a6;
+    color: #ffffff;
+}
+
+.modal-content .btn-primary:hover {
+    background-color: #0f766e;
+    border-color: #0f766e;
+}
+
+.profile-img-circle {
+    width: 110px;
+    height: 110px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.profile-img-card {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    border-radius: 14px;
+    margin-bottom: 1rem;
+}
+
+img.rounded-circle {
+    object-fit: cover;
+}
